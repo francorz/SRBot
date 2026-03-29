@@ -1,0 +1,12 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+
+/node_modules
+.env
+database.sqlite
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
+# just in case xd ↓
+package-lock.json 

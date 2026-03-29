@@ -1,0 +1,24 @@
+{
+    "name": "srbot",
+    "version": "1.0.0",
+    "description": "request songs :v",
+    "main": "index.js",
+    "scripts": {
+        "start": "node --no-warnings=ExperimentalWarning index.js",
+        "dev": "nodemon index.js"
+    },
+    "dependencies": {
+        "@esm2cjs/got": "^13.0.0",
+        "@mastondzn/dank-twitch-irc": "^7.2.1",
+        "@twurple/api": "^8.0.3",
+        "@twurple/auth": "^8.0.3",
+        "@twurple/eventsub-ws": "^8.0.3",
+        "better-sqlite3": "^12.8.0",
+        "dotenv": "^17.3.1",
+        "format-duration": "^3.0.2",
+        "got": "npm:@esm2cjs/got@^13.0.0",
+        "humanize-duration": "^3.33.2",
+        "simple-git": "^3.33.0",
+        "spotify-oauth-refresher": "^1.0.9"
+    }
+}
