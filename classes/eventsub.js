@@ -3,6 +3,11 @@ const { ApiClient } = require("@twurple/api");
 const { StaticAuthProvider } = require("@twurple/auth");
 const { client } = require("../src/client.js");
 
+const QueueCleanup = require("./syncQueue.js");
+const queueCleanup = new QueueCleanup();
+
+const { checkTrackChange } = require("../src/trackSongs.js");
+
 class EventSubManager {
     constructor(clientId, accessToken) {
         this.clientId = clientId;
@@ -18,6 +23,7 @@ class EventSubManager {
         this.subscriptions = new Map();
         this.streamStatus = new Map();
         this.isInitialized = false;
+        this.intervalId = null;
     }
 
     async initialize() {
@@ -66,6 +72,10 @@ class EventSubManager {
 
             logger.bot(`Channel ${login} (${userId}): ${isLive ? "LIVE 🔴" : "OFFLINE ⚫"}`);
 
+            if (isLive) {
+                this.startQueueServices();
+            }
+
             const onlineSubscription = this.listener.onStreamOnline(userId, async (event) => {
                 await this.handleStreamOnline(event);
             });
@@ -89,6 +99,7 @@ class EventSubManager {
         const userLogin = event.broadcasterName;
 
         client.privmsg(userLogin, `${process.env?.ARRIVE_EMOTE || ""} Live • SR Enabled`);
+        this.startQueueServices();
 
         this.streamStatus.set(userId, 1);
         await this.updateStreamStatus(userId, 1);
@@ -99,6 +110,7 @@ class EventSubManager {
         const userLogin = event.broadcasterName;
 
         client.privmsg(userLogin, `${process.env?.LEAVE_EMOTE || ""} Offline • SR Disabled`);
+        this.stopQueueServices();
 
         this.streamStatus.set(userId, 0);
         await this.updateStreamStatus(userId, 0);
@@ -110,6 +122,23 @@ class EventSubManager {
         } catch (error) {
             logger.error(`Error updating stream status (${userId}):`, error);
         }
+    }
+
+    startQueueServices() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+        this.intervalId = setInterval(() => checkTrackChange(), 15000);
+        queueCleanup.start(10000);
+        queueCleanup.syncWithSpotify();
+    }
+
+    stopQueueServices() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
+        queueCleanup.stop();
     }
 
     getStreamStatus(userId) {
@@ -178,6 +207,7 @@ class EventSubManager {
 
         this.subscriptions.clear();
         this.streamStatus.clear();
+        this.stopQueueServices();
 
         try {
             await this.listener.stop();

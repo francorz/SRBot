@@ -11,7 +11,7 @@ global.spotifyAPI = new SpotifyAPI(
     process.env.SPOTIFY_CLIENT_ID,
     process.env.SPOTIFY_CLIENT_SECRET,
     process.env.SPOTIFY_ACCESS_TOKEN,
-    process.env.SPOTIFY_REFRESH_TOKEN
+    process.env.SPOTIFY_REFRESH_TOKEN,
 );
 
 const Database = require("./classes/db.js");
@@ -21,18 +21,15 @@ db.initialize();
 const QueueCleanup = require("./classes/syncQueue.js");
 const queueCleanup = new QueueCleanup();
 
-const { checkTrackChange } = require("./src/trackSongs.js");
-
-setInterval(() => checkTrackChange(), 15000);
-queueCleanup.start(10000);
-queueCleanup.syncWithSpotify();
-
 const { handle } = require("./src/handler.js");
 const regex = require("./src/utils/regex.js");
 const { client, anonClient } = require("./src/client.js");
 const EventSubManager = require("./classes/eventsub.js");
 
-const eventSubManager = new EventSubManager(process.env.TWITCH_CLIENT_ID, process.env.TWITCH_ACCESS_TOKEN);
+const eventSubManager = new EventSubManager(
+    process.env.TWITCH_CLIENT_ID,
+    process.env.TWITCH_ACCESS_TOKEN,
+);
 eventSubManager.initialize();
 global.eventSubManager = eventSubManager;
 global.anonClient = anonClient;
@@ -79,7 +76,10 @@ async function createMsgData(msg, announce = false) {
 
     const { level } = await db.queryOne("SELECT level FROM users WHERE id = ?", [msg.senderUserID]);
 
-    const { is_live, live_only } = await db.queryOne("SELECT is_live, live_only FROM channels WHERE id = ?", [msg.channelID]);
+    const { is_live, live_only } = await db.queryOne(
+        "SELECT is_live, live_only FROM channels WHERE id = ?",
+        [msg.channelID],
+    );
 
     return {
         user: {
