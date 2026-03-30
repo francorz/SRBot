@@ -8,7 +8,6 @@ module.exports = {
         try {
             const username = msg?.args[0]?.toLowerCase().replace(/[@#,]/g, "") ?? msg.user.login;
             const user = await db.get("SELECT * FROM users WHERE login = ?", [username]);
-            logger.log(user)
 
             if (!user) {
                 return {
