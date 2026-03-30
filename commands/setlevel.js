@@ -49,7 +49,7 @@ module.exports = {
             await db.run("UPDATE users SET level = ? WHERE login = ?", [newLevel, username]);
 
             return {
-                text: `/me Updated ${utils.compare(user.display_name, user.login)}'s level from ${user.level} to ${newLevel}`,
+                text: `/me Updated ${user.login}'s level from ${user.level} to ${newLevel}`,
                 reply: true,
             };
         } catch (e) {

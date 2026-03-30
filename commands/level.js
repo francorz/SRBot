@@ -8,6 +8,7 @@ module.exports = {
         try {
             const username = msg?.args[0]?.toLowerCase().replace(/[@#,]/g, "") ?? msg.user.login;
             const user = await db.get("SELECT * FROM users WHERE login = ?", [username]);
+            logger.log(user)
 
             if (!user) {
                 return {
@@ -17,7 +18,7 @@ module.exports = {
             }
 
             return {
-                text: `/me ${utils.compare(user.display_name, user.login)} is level ${user.level}`,
+                text: `/me ${user.login} is level ${user.level}`,
                 reply: true,
             };
         } catch (e) {
