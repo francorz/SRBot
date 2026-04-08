@@ -74,7 +74,7 @@ exports.handle = async (msg) => {
 
         const cooldownKey = `${command.name}-${msg.user.id}-${msg.channel.login}`;
 
-        if (msg.user.level > 4) {
+        if (msg.user.level < 4) {
             if (utils.cooldown.has(cooldownKey)) return;
             utils.cooldown.set(cooldownKey, command.cooldown);
             setTimeout(() => utils.cooldown.delete(cooldownKey), command.cooldown);

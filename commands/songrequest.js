@@ -22,7 +22,7 @@ module.exports = {
             );
 
             return {
-                text: `/me AlienDance Added to queueu: "${trackInfo.name}" by ${songArtists} [${format(trackInfo.duration_ms)}]`,
+                text: `/me AlienDance Added to queue: "${trackInfo.name}" by ${songArtists} [${format(trackInfo.duration_ms)}]`,
                 reply: true,
             };
         } catch (e) {
