@@ -1,8 +1,5 @@
 const got = require("@esm2cjs/got").default;
-const path = require("path");
-const fs = require("fs");
 const { exec } = require("child_process");
-const crypto = require("crypto");
 const { inspect } = require("util");
 const { subscriptions } = require("../classes/eventsub.js");
 

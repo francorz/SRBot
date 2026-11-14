@@ -6,17 +6,15 @@ global.logger = new Logger();
 const MapCache = require("./classes/cache.js");
 global.mCache = new MapCache();
 
-const { SpotifyAPI } = require("./classes/spotify.js");
-global.spotifyAPI = new SpotifyAPI(
-    process.env.SPOTIFY_CLIENT_ID,
-    process.env.SPOTIFY_CLIENT_SECRET,
-    process.env.SPOTIFY_ACCESS_TOKEN,
-    process.env.SPOTIFY_REFRESH_TOKEN,
-);
-
 const Database = require("./classes/db.js");
 global.db = new Database();
 db.initialize();
+
+const utils = require("./src/utils/index.js");
+utils.spotifyAuth.startCallbackServer();
+
+const { SpotifyAPI } = require("./classes/spotify.js");
+global.spotifyAPI = new SpotifyAPI(process.env.STREAMER_ID);
 
 const QueueCleanup = require("./classes/syncQueue.js");
 const queueCleanup = new QueueCleanup();

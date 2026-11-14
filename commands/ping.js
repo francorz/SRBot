@@ -19,7 +19,7 @@ module.exports = {
             const ghCommit = await getGit();
 
             return {
-                text: `/me AlienDance 🏓 Pong! • Uptime: ${upTime} • Internal Delay: ${pingLatency}ms • RAM: ${ramUsage}MB • Version: ${ghCommit}`,
+                text: `/me AlienDance 🏓 Pong! • Uptime: ${upTime} • Latency: ${pingLatency}ms • RAM: ${ramUsage}MB • Version: ${ghCommit}`,
                 reply: true,
             };
         } catch (e) {

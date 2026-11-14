@@ -33,6 +33,14 @@ const queries = [
         command TEXT NOT NULL,
         live_only INTEGER NOT NULL
     )`,
+    `CREATE TABLE IF NOT EXISTS spotify_accounts (
+        twitch_user_id TEXT PRIMARY KEY,
+        access_token TEXT DEFAULT NULL,
+        refresh_token TEXT DEFAULT NULL,
+        expires_at INTEGER DEFAULT 0,
+        scope TEXT DEFAULT NULL,
+        updated_at INTEGER DEFAULT 0
+    )`,
 ];
 class Database {
     constructor() {

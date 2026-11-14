@@ -4,7 +4,7 @@ module.exports = {
     aliases: ["lvl"],
     description: "",
     level: 1,
-    execute: async (msg, client, config, utils) => {
+    execute: async (msg, client, utils) => {
         try {
             const username = msg?.args[0]?.toLowerCase().replace(/[@#,]/g, "") ?? msg.user.login;
             const user = await db.get("SELECT * FROM users WHERE login = ?", [username]);

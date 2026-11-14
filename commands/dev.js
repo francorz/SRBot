@@ -10,7 +10,7 @@ module.exports = {
     description: "Load, Unload, Reload commands and restart the bot from the chat, dev level required",
     level: 4,
     levelError: null,
-    execute: async (msg, client, config, utils) => {
+    execute: async (msg, client, utils) => {
         const Command = require("../src/commands.js");
         try {
             const subCommand = msg.command?.toLowerCase();
@@ -173,13 +173,13 @@ module.exports = {
                     };
                 }
                 case "restart": {
-                    return restartBot(msg, client, config, utils);
+                    return restartBot(msg, client, utils);
                 }
                 case "rejoin": {
-                    return rejoinChannels(msg, client, config, utils);
+                    return rejoinChannels(msg, client, utils);
                 }
                 case "nojoin": {
-                    return nojoinChannels(msg, client, config, utils);
+                    return nojoinChannels(msg, client, utils);
                 }
                 default: {
                     return {
@@ -198,7 +198,7 @@ module.exports = {
     },
 };
 
-async function restartBot(msg, client, config, utils) {
+async function restartBot(msg, client, utils) {
     try {
         await client.me(msg.channel.login, `ppCircle Restarting...`);
         eval(process.exit());
@@ -219,7 +219,7 @@ function getSymmetricDifference(iter1, iter2) {
     return [...arr1.filter((x) => !set2.has(x)), ...arr2.filter((x) => !set1.has(x))];
 }
 
-async function rejoinChannels(msg, client, config, utils) {
+async function rejoinChannels(msg, client, utils) {
     try {
         const channels = await db.query("SELECT login FROM channels WHERE active = 1").map((e) => e.login);
         const toRejoin = getSymmetricDifference(anonClient.joinedChannels, channels);
@@ -256,7 +256,7 @@ async function rejoinChannels(msg, client, config, utils) {
     }
 }
 
-async function nojoinChannels(msg, client, config, utils) {
+async function nojoinChannels(msg, client, utils) {
     try {
         const channels = await db.query("SELECT login FROM channels WHERE active = 1").map((e) => e.login);
         const notJoined = getSymmetricDifference(anonClient.joinedChannels, channels);

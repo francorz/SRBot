@@ -1,36 +1,17 @@
 const got = require("@esm2cjs/got").default;
-const Updater = require("spotify-oauth-refresher");
+const { getAccessToken } = require("../src/utils/spotifyAuth.js");
 
 class SpotifyAPI {
-    constructor(clientId, clientSecret, accessToken, refreshToken) {
-        this.api = new Updater({
-            clientId,
-            clientSecret,
-        });
-        this.api.setAccessToken(accessToken);
-        this.api.setRefreshToken(refreshToken);
+    constructor(twitchUserId = process.env.STREAMER_ID) {
+        this.twitchUserId = String(twitchUserId);
     }
 
-    /**
-     * Get the current user's profile
-     * @returns {Promise<Object>} User profile data
-     */
-    async getMe() {
-        const cacheKey = "spotify:me";
-        const cached = mCache.get(cacheKey);
+    forUser(twitchUserId) {
+        return new SpotifyAPI(twitchUserId);
+    }
 
-        if (cached) {
-            return cached;
-        }
-
-        const response = await this.api.request({
-            url: "https://api.spotify.com/v1/me",
-            method: "get",
-            authType: "bearer",
-        });
-
-        mCache.set(cacheKey, response, 300);
-        return response;
+    cacheKey(key) {
+        return `spotify:${this.twitchUserId}:${key}`;
     }
 
     /**
@@ -38,11 +19,11 @@ class SpotifyAPI {
      * @returns {Promise<Object>} Authorization headers
      */
     async getAuthHeaders() {
-        const me = await this.getMe();
+        const accessToken = await getAccessToken(this.twitchUserId);
         return {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: me.config.headers.Authorization,
+            Authorization: `Bearer ${accessToken}`,
         };
     }
 
@@ -91,7 +72,7 @@ class SpotifyAPI {
      * @returns {Promise<Object>} Recently played tracks
      */
     async getRecentlyPlayed(limit = 20) {
-        const cacheKey = `spotify:recently_played:${limit}`;
+        const cacheKey = this.cacheKey(`recently_played:${limit}`);
         const cached = mCache.get(cacheKey);
 
         if (cached) {
@@ -118,7 +99,7 @@ class SpotifyAPI {
      * @returns {Promise<Object>} Top tracks
      */
     async getTopTracks(timeRange = "medium_term", limit = 20) {
-        const cacheKey = `spotify:top_tracks:${timeRange}:${limit}`;
+        const cacheKey = this.cacheKey(`top_tracks:${timeRange}:${limit}`);
         const cached = mCache.get(cacheKey);
 
         if (cached) {
@@ -145,7 +126,7 @@ class SpotifyAPI {
      * @returns {Promise<Object>} Top artists
      */
     async getTopArtists(timeRange = "medium_term", limit = 20) {
-        const cacheKey = `spotify:top_artists:${timeRange}:${limit}`;
+        const cacheKey = this.cacheKey(`top_artists:${timeRange}:${limit}`);
         const cached = mCache.get(cacheKey);
 
         if (cached) {
@@ -173,7 +154,7 @@ class SpotifyAPI {
      * @returns {Promise<Object>} Search results
      */
     async search(query, type = "track", limit = 20) {
-        const cacheKey = `spotify:search:${query}:${type}:${limit}`;
+        const cacheKey = this.cacheKey(`search:${query}:${type}:${limit}`);
         const cached = mCache.get(cacheKey);
 
         if (cached) {
@@ -200,7 +181,7 @@ class SpotifyAPI {
      * @returns {Promise<Object>} Track details
      */
     async getTrack(trackId) {
-        const cacheKey = `spotify:track:${trackId}`;
+        const cacheKey = this.cacheKey(`track:${trackId}`);
         const cached = mCache.get(cacheKey);
 
         if (cached) {

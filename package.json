@@ -4,8 +4,7 @@
     "description": "request songs :v",
     "main": "index.js",
     "scripts": {
-        "start": "node --no-warnings=ExperimentalWarning index.js",
-        "dev": "nodemon index.js"
+        "start": "node --no-warnings=ExperimentalWarning index.js"
     },
     "dependencies": {
         "@esm2cjs/got": "^13.0.0",
@@ -18,7 +17,6 @@
         "format-duration": "^3.0.2",
         "got": "npm:@esm2cjs/got@^13.0.0",
         "humanize-duration": "^3.33.2",
-        "simple-git": "^3.33.0",
-        "spotify-oauth-refresher": "^1.0.9"
+        "simple-git": "^3.33.0"
     }
 }
